@@ -1,0 +1,20 @@
+# Meson Cross-compilation File for Cortex-M0 processors
+# Note that Cortex-M0 does not provide an FPU
+# This file should be layered after arm.txt
+# Requires that arm-none-eabi-* is found in your PATH
+# For more information: http://mesonbuild.com/Cross-compilation.html
+
+[built-in options]
+c_args = [ '-mcpu=cortex-m0', '-mfloat-abi=soft', '-mabi=aapcs', '-mthumb']
+c_link_args = [ '-mcpu=cortex-m0', '-mfloat-abi=soft', '-mabi=aapcs', '-mthumb', '--specs=nano.specs', '-nostartfiles']
+
+cpp_args = [ '-mcpu=cortex-m0', '-mfloat-abi=soft', '-mabi=aapcs', '-mthumb',]
+cpp_link_args = [ '-mcpu=cortex-m0', '-mfloat-abi=soft', '-mabi=aapcs', '-mthumb', '--specs=nano.specs', '-nostartfiles']
+
+[properties]
+linker_paths = ['subprojects/libsam/samd21_pack/samd21b/gcc/gcc/']
+linker_scripts = ['samd21e16bu_flash.ld']
+link_depends = ['subprojects/libsam/samd21_pack/samd21b/gcc/gcc/samd21e16bu_flash.ld']
+
+[host_machine]
+cpu = 'cortex-m0'
