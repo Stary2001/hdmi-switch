@@ -30,13 +30,13 @@ bool current_output = true;
 static void switch_to_output(bool out) {
 	current_output = out;
 	if(current_output) {
-	    port_set_value(1, true);
+		port_set_value(1, true);
 		port_set_value(LED0, true);
 		port_set_value(LED3, false);
 	} else {
 		port_set_value(1, false);
-	    port_set_value(LED0, false);
-	    port_set_value(LED3, true);
+		port_set_value(LED0, false);
+		port_set_value(LED3, true);
 	}
 }
 
@@ -44,22 +44,16 @@ static void cdc_task(void)
 {
 	if ( tud_cdc_n_available(0) )
 	{
-	    uint8_t buf[64];
-	    uint32_t count = tud_cdc_n_read(0, buf, sizeof(buf));
+		uint8_t buf[64];
+		uint32_t count = tud_cdc_n_read(0, buf, sizeof(buf));
 
-	    for(uint32_t i = 0; i < count; i++) {
-	    	if(buf[i] == '1') {
-	    		// switch to 1
-	    		port_set_value(1, true);
-	    		port_set_value(LED0, true);
-	    		port_set_value(LED3, false);
-	    	} else if(buf[i] == '2') {
-	    		// switch to 2
-	    		port_set_value(1, false);
-	    		port_set_value(LED0, false);
-	    		port_set_value(LED3, true);
-	    	}
-	    }
+		for(uint32_t i = 0; i < count; i++) {
+			if(buf[i] == '1') {
+				switch_to_output(true); // switch to 1
+			} else if(buf[i] == '2') {
+				switch_to_output(false); // switch to 2
+			}
+		}
 	}
 }
 
