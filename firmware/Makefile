@@ -7,7 +7,7 @@ build/build.ninja:
 
 .PHONY: build/firmware.elf
 build/firmware.elf: build/build.ninja
-	ninja -C build -v
+	ninja -C build
 
 build/firmware.dfu: build/firmware.elf
 	dx1elf2dfu build/firmware.elf build/firmware.dfu
