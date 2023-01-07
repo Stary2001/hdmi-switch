@@ -15,8 +15,17 @@ void USB_Handler() {
 volatile uint32_t system_ticks = 0;
 void SysTick_Handler (void)
 {
-  system_ticks++;
+	system_ticks++;
 }
+
+// GPIO pin definitions
+const int OE_B = 0;
+const int SEL1 = 1;
+const int ROUT_S0 = 2;
+const int OC_S0 = 3;
+const int EQ_S0 = 4;
+
+const int HPD_IN = 7;
 
 const int LED0 = 27;
 const int LED1 = 22;
@@ -26,7 +35,6 @@ const int LED3 = 18;
 const int BUTTON = 11;
 
 bool current_output = true;
-
 static void switch_to_output(bool out) {
 	current_output = out;
 	if(current_output) {
@@ -40,10 +48,8 @@ static void switch_to_output(bool out) {
 	}
 }
 
-static void cdc_task(void)
-{
-	if ( tud_cdc_n_available(0) )
-	{
+static void cdc_task(void) {
+	if (tud_cdc_n_available(0)) {
 		uint8_t buf[64];
 		uint32_t count = tud_cdc_n_read(0, buf, sizeof(buf));
 
@@ -86,37 +92,35 @@ int main() {
 
 	clock_setup_systick_1ms();
 
-	port_set_direction(0, true); // oeb
-	port_set_direction(1, true); //sel1
-	port_set_direction(2, true); //rout_s0
-	port_set_direction(3, true); // oc_s0
-	port_set_direction(4, true); // eq_s0
+	port_set_direction(OE_B, true);
+	port_set_direction(SEL1, true);
+	port_set_direction(ROUT_S0, true);
+	port_set_direction(OC_S0, true);
+	port_set_direction(EQ_S0, true);
 
-	port_set_direction(7, false); // hpd
+	port_set_direction(HPD_IN, false);
 
-	port_set_direction(LED0, true); // led0
-	port_set_direction(LED1, true); // led1
-	port_set_direction(LED2, true); // led2
-	port_set_direction(LED3, true); // led3
+	port_set_direction(LED0, true);
+	port_set_direction(LED1, true);
+	port_set_direction(LED2, true);
+	port_set_direction(LED3, true);
 
-	port_set_value(LED0, true); // led0
-	port_set_value(LED1, false); // led1
-	port_set_value(LED2, false); // led2
-	port_set_value(LED3, false); // led3
+	port_set_value(LED0, true);
+	port_set_value(LED1, false);
+	port_set_value(LED2, false);
+	port_set_value(LED3, false);
 
-	//button
-	port_set_direction(11, false);
+	port_set_direction(BUTTON, false);
 
-	port_set_value(0, false); // oeb low = enable
-	port_set_value(1, true); // sel1 high = port 1 select
-	port_set_value(2, true); // rout_s0 high = 50ohm termination
-	port_set_value(3, false); // low = 0db pre-emphasis
-	port_set_value(4, false); // low = 9db eq
+	port_set_value(OE_B, false); // oeb low = enable
+	port_set_value(SEL1, true); // sel1 high = port 1 select
+	port_set_value(ROUT_S0, true); // rout_s0 high = 50ohm termination
+	port_set_value(OC_S0, false); // low = 0db pre-emphasis
+	port_set_value(EQ_S0, false); // low = 9db eq
 
 	pinmux_setup_usb();
 
 	string_desc_arr[3] = (const char *) serial_get_hash_hex();
-	//string_desc_arr[3] = "123456";
 
 	tusb_init();
 	tud_init(0);
