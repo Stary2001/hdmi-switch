@@ -84,6 +84,8 @@ int main() {
 	clock_setup_gclk2_8mhz();
 	clock_setup_usb();
 
+	clock_setup_systick_1ms();
+
 	port_set_direction(0, true); // oeb
 	port_set_direction(1, true); //sel1
 	port_set_direction(2, true); //rout_s0
